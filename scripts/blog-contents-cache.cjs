@@ -43,9 +43,7 @@ const getAllPages = async () => {
     return {
       id: result.id,
       last_edited_time: result.last_edited_time,
-      slug: result.properties.Slug.rich_text
-        ? result.properties.Slug.rich_text[0].plain_text
-        : '',
+      slug: result.properties.Slug.rich_text ? result.properties.Slug.rich_text[0].plain_text : '',
     };
   });
 
@@ -57,10 +55,7 @@ const getAllPages = async () => {
 
   const concurrency = parseInt(process.env.CACHE_CONCURRENCY || '1', 10);
 
-  const progressBar = new cliProgress.SingleBar(
-    { stopOnComplete: true },
-    cliProgress.Presets.shades_classic
-  );
+  const progressBar = new cliProgress.SingleBar({ stopOnComplete: true }, cliProgress.Presets.shades_classic);
   progressBar.start(pages.length, 0);
 
   await PromisePool.withConcurrency(concurrency)
@@ -70,7 +65,7 @@ const getAllPages = async () => {
         const command = `NX_BRANCH=main npx nx run astro-notion-blog:_fetch-notion-blocks ${page.id} ${page.last_edited_time}`;
         const options = { timeout: 60000 };
 
-        exec(command, options, (err, stdout, stderr) => {
+        exec(command, options, (err, _stdout, _stderr) => {
           if (err) {
             console.error(`exec error: ${err}`);
           }

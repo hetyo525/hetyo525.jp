@@ -1,20 +1,16 @@
 ---
-import { Post } from '../../lib/interfaces.ts'
-import { getPostByPageId } from '../../lib/notion/client'
-import { getPostLink } from '../../lib/blog-helpers.ts'
-import '../../styles/notion-color.css'
-import arrow from '../../images/icon-arrow-link.svg'
+import { getPostLink } from '@/lib/blog-helpers.ts';
+import { getPostByPageId } from '@/lib/notion/client';
+import arrow from '../../images/icon-arrow-link.svg';
+import '../../styles/notion-color.css';
 
 export interface Props {
-  pageId: string
+  pageId: string;
 }
 
-const { pageId } = Astro.props
+const { pageId } = Astro.props;
 
-let post: Post = null
-if (pageId) {
-  post = await getPostByPageId(pageId)
-}
+const post = pageId ? await getPostByPageId(pageId) : null;
 ---
 
 {
@@ -25,11 +21,7 @@ if (pageId) {
           {post.Icon && post.Icon.Type === 'emoji' ? (
             post.Icon.Emoji
           ) : post.Icon && post.Icon.Type === 'external' ? (
-            <img
-              src={post.Icon.Url}
-              class="notion-icon"
-              alt="Post title icon in a page link"
-            />
+            <img src={post.Icon.Url} class="notion-icon" alt="Post title icon in a page link" />
           ) : (
             '📄'
           )}

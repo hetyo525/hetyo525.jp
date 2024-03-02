@@ -39,17 +39,11 @@ const retrieveAndWriteBlockChildren = async (blockId) => {
   fs.writeFileSync(`tmp/${blockId}.json`, JSON.stringify(results));
 
   results.forEach(async (block) => {
-    if (
-      block.type === 'synced_block' &&
-      block.synced_block.synced_from &&
-      block.synced_block.synced_from.block_id
-    ) {
+    if (block.type === 'synced_block' && block.synced_block.synced_from && block.synced_block.synced_from.block_id) {
       try {
         await retrieveAndWriteBlock(block.synced_block.synced_from.block_id);
       } catch (err) {
-        console.log(
-          `Could not retrieve the original synced_block. error: ${err}`
-        );
+        console.log(`Could not retrieve the original synced_block. error: ${err}`);
         throw err;
       }
     } else if (block.has_children) {

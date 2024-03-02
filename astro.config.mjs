@@ -1,9 +1,11 @@
+import icon from 'astro-icon';
 import { defineConfig } from 'astro/config';
-import { CUSTOM_DOMAIN, BASE_PATH } from './src/server-constants';
+import { visualizer } from 'rollup-plugin-visualizer';
 import CoverImageDownloader from './src/integrations/cover-image-downloader';
 import CustomIconDownloader from './src/integrations/custom-icon-downloader';
 import FeaturedImageDownloader from './src/integrations/featured-image-downloader';
 import PublicNotionCopier from './src/integrations/public-notion-copier';
+import { BASE_PATH, CUSTOM_DOMAIN } from './src/server-constants';
 
 const getSite = function () {
   if (CUSTOM_DOMAIN) {
@@ -21,10 +23,7 @@ const getSite = function () {
 
     return new URL(
       BASE_PATH,
-      `https://${new URL(process.env.CF_PAGES_URL).host
-        .split('.')
-        .slice(1)
-        .join('.')}`
+      `https://${new URL(process.env.CF_PAGES_URL).host.split('.').slice(1).join('.')}`,
     ).toString();
   }
 
@@ -36,9 +35,25 @@ export default defineConfig({
   site: getSite(),
   base: BASE_PATH,
   integrations: [
+    icon(),
     CoverImageDownloader(),
     CustomIconDownloader(),
     FeaturedImageDownloader(),
     PublicNotionCopier(),
   ],
+  vite: {
+    ssr: {
+      noExternal: ['beercss'],
+    },
+    build: {
+      rollupOptions: {
+        plugins: [visualizer()],
+        output: {
+          entryFileNames: 'entry.[hash].mjs',
+          chunkFileNames: 'chunks/chunk.[hash].mjs',
+          assetFileNames: 'assets/asset.[hash][extname]',
+        },
+      },
+    },
+  },
 });

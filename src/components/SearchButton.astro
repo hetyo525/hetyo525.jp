@@ -1,8 +1,10 @@
 ---
-import { Icon } from 'astro-icon'
+import { Icon } from 'astro-icon/components';
 ---
 
-<button class="search-button open-search-modal" type="button"><Icon name="octicon:search-24" /><span>Search</span></button>
+<button class="search-button open-search-modal" type="button">
+  <Icon name="octicon:search-24" /><span>Search</span>
+</button>
 
 <style>
   .search-button {
@@ -26,20 +28,20 @@ import { Icon } from 'astro-icon'
     height: 20px;
     margin-right: 0.2rem;
   }
-  [astro-icon="octicon:search-24"] {
+  [astro-icon='octicon:search-24'] {
     color: var(--fg);
   }
 </style>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    function handleKeydown(event) {
-      if (event.keyCode === 75 && event.metaKey) {
-        // Ctrl+K or Cmd+K
-        document.querySelector('.open-search-modal').click()
-      }
+  function handleKeydown(event: KeyboardEvent) {
+    if (event.key === 'Enter' && event.metaKey) {
+      const elm = document.querySelector<HTMLButtonElement>('.open-search-modal');
+      elm?.click();
     }
+  }
 
-    document.addEventListener('keydown', handleKeydown)
-  })
+  document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('keydown', handleKeydown);
+  });
 </script>

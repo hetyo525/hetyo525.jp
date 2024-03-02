@@ -1,46 +1,43 @@
 ---
-import * as interfaces from '../../lib/interfaces.ts'
-import { buildHeadingId } from '../../lib/blog-helpers.ts'
-import RichText from './RichText.astro'
-import NotionBlocks from '../NotionBlocks.astro'
+import { buildHeadingId } from '@/lib/blog-helpers.ts';
+import type * as interfaces from '@/lib/interfaces.ts';
+import NotionBlocks from '../NotionBlocks.astro';
+import RichText from './RichText.astro';
 
 export interface Props {
-  block: interfaces.Block
-  headings: interfaces.Block[]
+  block: interfaces.Block;
+  headings: interfaces.Block[];
 }
 
-const { block, headings } = Astro.props
-
-const id = buildHeadingId(block.Heading2)
+const { block, headings } = Astro.props;
+const heading2 = block.Heading2;
+const id = heading2 ? buildHeadingId(heading2) : undefined;
 ---
 
 {
-  block.Heading2.IsToggleable ? (
-    <details class="toggle">
-      <summary>
-        <a href={`#${id}`} id={id}>
-          <h4>
-            {block.Heading2.RichTexts.map((richText: interfaces.RichText) => (
-              <RichText richText={richText} />
-            ))}
-          </h4>
-        </a>
-      </summary>
-      <div>
-        {block.Heading2.Children && (
-          <NotionBlocks blocks={block.Heading2.Children} headings={headings} />
-        )}
-      </div>
-    </details>
-  ) : (
-    <a href={`#${id}`} id={id}>
-      <h4>
-        {block.Heading2.RichTexts.map((richText: interfaces.RichText) => (
-          <RichText richText={richText} />
-        ))}
-      </h4>
-    </a>
-  )
+  heading2 &&
+    (heading2.IsToggleable ? (
+      <details class="toggle">
+        <summary>
+          <a href={`#${id}`} id={id}>
+            <h4>
+              {heading2.RichTexts.map((richText: interfaces.RichText) => (
+                <RichText richText={richText} />
+              ))}
+            </h4>
+          </a>
+        </summary>
+        <div>{heading2.Children && <NotionBlocks blocks={heading2.Children} headings={headings} />}</div>
+      </details>
+    ) : (
+      <a href={`#${id}`} id={id}>
+        <h4>
+          {heading2.RichTexts.map((richText: interfaces.RichText) => (
+            <RichText richText={richText} />
+          ))}
+        </h4>
+      </a>
+    ))
 }
 
 <style>

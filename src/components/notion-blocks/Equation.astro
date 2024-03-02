@@ -1,20 +1,25 @@
 ---
-import katex from 'katex'
-import * as interfaces from '../../lib/interfaces.ts'
+import type * as interfaces from '@/lib/interfaces.ts';
+import katex from 'katex';
 
 export interface Props {
-  block: interfaces.Block
+  block: interfaces.Block;
 }
 
-const { block } = Astro.props
+const { block } = Astro.props;
+const expression = block.Equation?.Expression;
 ---
 
-<div
-  class="equation"
-  set:html={katex.renderToString(block.Equation.Expression, {
-    throwOnError: false,
-  })}
-/>
+{
+  expression && (
+    <div
+      class="equation"
+      set:html={katex.renderToString(expression, {
+        throwOnError: false,
+      })}
+    />
+  )
+}
 
 <style>
   .equation {

@@ -1,0 +1,44 @@
+---
+import Layout from '@/layouts/Layout.astro';
+
+const feature = 'Schedule';
+const title = 'スケジュール';
+const description =
+  '@hetyo525 の予定（Google Calender）を公開しています。飲み会のお誘いなど、この予定を参考にしてください。';
+---
+
+<Layout feature={feature} title={title} description={description}>
+  <div slot="main">
+    <h2 class="m l">これをみて私との予定を調整してください。</h2>
+    <h2 class="s small-text">これをみて私との予定を調整してください。</h2>
+    <div class="calender-wrapper">
+      <iframe
+        src="https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=Asia%2FTokyo&bgcolor=%23f8b500&showTitle=0&showCalendars=0&showPrint=0&showTz=0&mode=AGENDA&src=aGV0eW81MjVAZ21haWwuY29t&src=bDJiOXMxa2xuZXZoM2tpMmgwN2VzNXF1b2UzMzI0Z2pAaW1wb3J0LmNhbGVuZGFyLmdvb2dsZS5jb20&color=%234285F4&color=%23AD1457"
+        style="border-width:0;"
+        width="100%"
+        height="100%"
+      >
+      </iframe>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calender-wrapper {
+    height: 800px;
+  }
+
+  @media (max-width: 640px) {
+    .calender-wrapper {
+      width: 100vw;
+      height: calc(100vh - 74px);
+      position: fixed;
+      margin: 0 -8px;
+      z-index: 1;
+    }
+    :global(main.responsive) {
+      max-height: calc(100vh - 112px) !important;
+      min-block-size: calc(100vh - 112px) !important;
+    }
+  }
+</style>

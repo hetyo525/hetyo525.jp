@@ -1,15 +1,18 @@
 ---
-import * as interfaces from '../../lib/interfaces.ts'
-import { snakeToKebab } from '../../lib/style-helpers.ts'
-import RichText from './RichText.astro'
-import NotionBlocks from '../NotionBlocks.astro'
+import type * as interfaces from '@/lib/interfaces.ts';
+import { snakeToKebab } from '@/lib/style-helpers.ts';
+import NotionBlocks from '../NotionBlocks.astro';
+import RichText from './RichText.astro';
 
 export interface Props {
-  block: interfaces.Block
-  headings: interfaces.Block[]
+  block: interfaces.Block;
+  headings: interfaces.Block[];
 }
 
-const { block, headings } = Astro.props
+const { block, headings } = Astro.props;
+if (!block.Callout) {
+  return null;
+}
 ---
 
 <div class={`callout ${snakeToKebab(block.Callout.Color)}`}>
@@ -25,16 +28,8 @@ const { block, headings } = Astro.props
     )
   }
   <div>
-    {
-      block.Callout.RichTexts.map((richText: interfaces.RichText) => (
-        <RichText richText={richText} />
-      ))
-    }
-    {
-      block.Callout.Children && (
-        <NotionBlocks blocks={block.Callout.Children} headings={headings} />
-      )
-    }
+    {block.Callout.RichTexts.map((richText: interfaces.RichText) => <RichText richText={richText} />)}
+    {block.Callout.Children && <NotionBlocks blocks={block.Callout.Children} headings={headings} />}
   </div>
 </div>
 

@@ -1,11 +1,26 @@
 {
-  "trailingComma": "es5",
+  "trailingComma": "all",
+  "printWidth": 120,
   "singleQuote": true,
+  "htmlWhitespaceSensitivity": "ignore",
+  "plugins": ["prettier-plugin-astro", "prettier-plugin-organize-imports"],
   "overrides": [
     {
-      "files": ["*.ts", "*.astro"],
+      "files": ["*.css", "*.scss"],
       "options": {
-        "semi": false
+        "singleQuote": false
+      }
+    },
+    {
+      "files": "*.astro",
+      "options": {
+        "parser": "astro"
+      }
+    },
+    {
+      "files": "*.json",
+      "options": {
+        "printWidth": 80
       }
     }
   ]

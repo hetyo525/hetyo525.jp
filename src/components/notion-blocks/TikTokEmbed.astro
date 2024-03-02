@@ -1,25 +1,16 @@
 ---
 export interface Props {
-  url: URL
+  url: URL;
 }
-const { url } = Astro.props
-const user = url.pathname.split('/')[1]
-const videoId = url.pathname.split('/')[3]
+const { url } = Astro.props;
+const user = url.pathname.split('/')[1];
+const videoId = url.pathname.split('/')[3];
 ---
 
 <div class="tiktok-wrapper">
-  <blockquote
-    class="tiktok-embed"
-    cite={url.toString()}
-    data-video-id={videoId}
-    style="min-width: 325px;"
-  >
+  <blockquote class="tiktok-embed" cite={url.toString()} data-video-id={videoId} style="min-width: 325px;">
     <section>
-      <a
-        target="_blank"
-        title={user}
-        href="https://www.tiktok.com/{user}?refer=embed">{user}</a
-      >
+      <a target="_blank" title={user} href="https://www.tiktok.com/{user}?refer=embed">{user}</a>
     </section>
   </blockquote>
 </div>
