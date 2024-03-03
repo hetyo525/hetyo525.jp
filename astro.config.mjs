@@ -7,6 +7,8 @@ import FeaturedImageDownloader from './src/integrations/featured-image-downloade
 import PublicNotionCopier from './src/integrations/public-notion-copier';
 import { BASE_PATH, CUSTOM_DOMAIN } from './src/server-constants';
 
+import pagefind from 'astro-pagefind';
+
 const getSite = function () {
   if (CUSTOM_DOMAIN) {
     return new URL(BASE_PATH, `https://${CUSTOM_DOMAIN}`).toString();
@@ -33,9 +35,13 @@ const getSite = function () {
 // https://astro.build/config
 export default defineConfig({
   site: getSite(),
+  build: {
+    format: 'file',
+  },
   base: BASE_PATH,
   integrations: [
     icon(),
+    pagefind(),
     CoverImageDownloader(),
     CustomIconDownloader(),
     FeaturedImageDownloader(),

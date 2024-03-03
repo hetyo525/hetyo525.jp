@@ -1,0 +1,137 @@
+---
+import Search from 'astro-pagefind/components/Search';
+---
+
+<!-- 検索 -->
+<button id="search-btn" class="s button small transparent circle" title="検索">
+  <i>search</i>
+</button>
+
+<div class="overlay"></div>
+
+<Search
+  id="search"
+  className="pagefind-ui"
+  uiOptions={{
+    translations: {
+      placeholder: 'Search...',
+      clear_search: '✕',
+      search_label: 'このサイトを検索',
+      filters_label: 'フィルタ',
+      zero_results: '"[SEARCH_TERM]" に一致する結果はありませんでした',
+      many_results: '"[SEARCH_TERM]" の検索結果（[COUNT]件）',
+      one_result: '"[SEARCH_TERM]" の検索結果（[COUNT]件）',
+      alt_search: '"[SEARCH_TERM]" に一致する結果はありません。[DIFFERENT_TERM] の結果を表示しています',
+      search_suggestion: '"[SEARCH_TERM]" の検索に一致する件はありませんでした。次のいずれかの検索を試してください',
+      searching: '"[SEARCH_TERM]" を検索しています…',
+    },
+  }}
+/>
+
+<style is:global>
+  .pagefind-ui {
+    --pagefind-ui-scale: 0.75;
+    --pagefind-ui-primary: var(--on-primary);
+    --pagefind-ui-text: var(--on-surface);
+    --pagefind-ui-border: slategrey;
+    --pagefind-ui-background: var(--surface);
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 0.25rem;
+    --pagefind-ui-font: var(--font);
+    width: 240px;
+  }
+  .pagefind-ui .pagefind-ui__search-input {
+    height: 32px;
+    padding-left: 16px;
+    padding-right: 8px;
+    color: var(--pagefind-ui-text);
+  }
+  .pagefind-ui .pagefind-ui__form::before {
+    display: none;
+  }
+  .pagefind-ui .pagefind-ui__drawer {
+    top: 48px;
+    left: 0;
+    right: 0;
+    padding: 1rem;
+    margin: auto;
+    position: fixed;
+    background-color: var(--surface);
+    border-radius: 8px;
+    max-inline-size: calc(75rem + var(---padding));
+    min-height: 400px;
+  }
+  .pagefind-ui .pagefind-ui__button {
+    position: relative;
+  }
+  .pagefind-ui .pagefind-ui__search-clear {
+    top: 4px;
+    height: 24px;
+    padding: 0 8px;
+  }
+
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    width: 100%;
+    height: 100vh;
+  }
+
+  @media (max-width: 640px) {
+    #search {
+      position: fixed;
+      z-index: 1000;
+      visibility: hidden;
+      width: 100%;
+      left: 0;
+      padding: 8px;
+      background-color: var(--surface);
+    }
+    #search.show {
+      visibility: visible;
+    }
+  }
+</style>
+
+<script is:inline>
+  window.addEventListener('DOMContentLoaded', () => {
+    const body = document.getElementsByTagName('body')[0];
+    const input = document.getElementsByClassName('pagefind-ui__search-input')[0];
+    const clearBtn = document.getElementsByClassName('pagefind-ui__search-clear')[0];
+    const overlay = document.querySelector('.overlay');
+    input.addEventListener('input', (event) => {
+      if (event.target.value) {
+        overlay.classList.add('active');
+        body.classList.add('no-scroll');
+      } else {
+        overlay.classList.remove('active');
+        body.classList.remove('no-scroll');
+      }
+    });
+    clearBtn.addEventListener('click', () => {
+      overlay.classList.remove('active');
+      body.classList.remove('no-scroll');
+    });
+  });
+</script>
+
+<script>
+  const searchBtn = document.getElementById('search-btn')!;
+  const search = document.getElementById('search')!;
+  const overlay = document.querySelector('.overlay')!;
+  searchBtn.addEventListener('click', () => {
+    search.classList.add('show');
+    overlay.classList.add('active');
+    search.querySelector('input')?.focus();
+  });
+  overlay.addEventListener('click', () => {
+    const clearBtn = document.querySelector<HTMLButtonElement>('.pagefind-ui__search-clear')!;
+    clearBtn.click();
+    search.classList.remove('show');
+    overlay.classList.remove('active');
+  });
+</script>

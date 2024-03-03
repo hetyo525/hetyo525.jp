@@ -1,5 +1,6 @@
 ---
 import GoogleAnalytics from '@/components/GoogleAnalytics.astro';
+import PagefindSearch from '@/components/PagefindSearch.astro';
 import { getNavLink, getStaticFilePath } from '@/lib/blog-helpers';
 import { PUBLIC_GA_TRACKING_ID } from '@/server-constants';
 
@@ -11,12 +12,13 @@ export interface Props {
   description?: string;
   path?: string;
   ogImage?: string;
+  includePadefind?: boolean;
 }
 
 const DEFAULT_SITE_TITLE = 'hetyo525.jp';
 const DEFAULT_SITE_DESCRIPTION = '@hetyo525 は日本のアニメ・女性声優のオタク。';
 
-const { feature = '', title = '', description = '', path = '/', ogImage = '' } = Astro.props;
+const { feature = '', title = '', description = '', path = '/', ogImage = '', includePadefind = false } = Astro.props;
 
 const siteTitle = title ? `${title} - ${DEFAULT_SITE_TITLE}` : DEFAULT_SITE_TITLE;
 const siteDescription = description ? description : DEFAULT_SITE_DESCRIPTION;
@@ -55,52 +57,57 @@ const siteOGImage = new URL(getStaticFilePath('/default-og-image.png'), Astro.si
     <GoogleAnalytics trackingId={PUBLIC_GA_TRACKING_ID} />
     <header class="fixed responsive max">
       <nav id="header-nav">
-        <a class="large-text bold" href="/">hetyo525.jp</a>
-        {
-          feature && (
-            <>
-              <p class="m l large-text">{`|`}</p>
-              <p class="m l large-text">{feature}</p>
-            </>
-          )
-        }
+        <div class="title row">
+          <a class="large-text bold" href="/">hetyo525.jp</a>
+          {
+            feature && (
+              <>
+                <p class="m l s large-text">{`/`}</p>
+                <p class="m l s large-text">{feature}</p>
+              </>
+            )
+          }
+        </div>
+
         <div class="max"></div>
+        <PagefindSearch />
+        <div class="l m max"></div>
 
         <!-- 日記 -->
-        <a class="m l button transparent small-round" href="/blog">
+        <a class="l button transparent small-round" href="/blog">
           <i>description</i>
           ぶろぐ
         </a>
-        <a class="s button small transparent circle" href="/blog" title="にっき">
+        <a class="m s button small transparent circle" href="/blog" title="にっき">
           <i>description</i>
         </a>
 
         <!-- 予定 -->
-        <a class="m l button transparent small-round" href="/schedule">
+        <a class="l button transparent small-round" href="/schedule">
           <i>today</i>
           よてい
         </a>
-        <a class="s button small transparent circle" href="/schedule" title="よてい">
+        <a class="m s button small transparent circle" href="/schedule" title="よてい">
           <i>today</i>
         </a>
 
-        <button class="m l transparent circle theme-bth">
+        <button class="l transparent circle theme-bth">
           <i>light_mode</i>
         </button>
-        <button class="s small transparent circle theme-bth">
+        <button class="m s small transparent circle theme-bth">
           <i>light_mode</i>
         </button>
       </nav>
     </header>
 
-    <main class="responsive">
+    <main class="responsive" data-pagefind-body={includePadefind}>
       <slot name="main" />
     </main>
 
     <div class="footer-wrapper">
       <footer class="responsive center-align">
         <div>
-          <b class="small-text">© 2024 hetyo525</b>
+          <p class="small-text">© 2024 hetyo525</p>
         </div>
       </footer>
     </div>
@@ -116,24 +123,8 @@ const siteOGImage = new URL(getStaticFilePath('/default-og-image.png'), Astro.si
     display: flex;
     max-width: 1280px;
   }
-  @media (max-width: 640px) {
-    .container > div {
-      display: block;
-    }
-  }
-
-  main {
-    flex: 1;
-    order: 2;
-    justify-content: space-between;
-  }
-  @media (max-width: 640px) {
-    main {
-      order: 1;
-    }
-    header {
-      padding: 0 0.5rem;
-    }
+  .title {
+    min-width: 196px;
   }
 
   header {
@@ -150,12 +141,31 @@ const siteOGImage = new URL(getStaticFilePath('/default-og-image.png'), Astro.si
     gap: 0.5rem;
   }
 
+  main.responsive {
+    padding: 1rem;
+  }
+
   .footer-wrapper {
     background-color: var(--surface-container);
   }
 
-  nav > .button.m.l {
+  nav > .button.l {
     padding: 0 0.75rem;
+  }
+
+  @media (max-width: 640px) {
+    .container > div {
+      display: block;
+    }
+    header {
+      padding: 0 0.5rem;
+    }
+    main.responsive {
+      padding: 0.5rem;
+    }
+    .title.row {
+      gap: 0.25rem;
+    }
   }
 </style>
 

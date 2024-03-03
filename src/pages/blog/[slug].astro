@@ -90,7 +90,14 @@ if (post.FeaturedImage && post.FeaturedImage.Url) {
 }
 ---
 
-<Layout feature="Blog" title={post.Title} description={post.Excerpt} path={getPostLink(post.Slug)} ogImage={ogImage}>
+<Layout
+  feature="Blog"
+  title={post.Title}
+  description={post.Excerpt}
+  path={getPostLink(post.Slug)}
+  ogImage={ogImage}
+  includePadefind={true}
+>
   <div slot="main" class={styles.main}>
     <div class={styles.post}>
       <PostDate post={post} />
