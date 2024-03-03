@@ -1,13 +1,16 @@
+import sitemap from '@astrojs/sitemap';
+import compress from 'astro-compress';
 import icon from 'astro-icon';
+import pagefind from 'astro-pagefind';
+import purgecss from 'astro-purgecss';
 import { defineConfig } from 'astro/config';
 import { visualizer } from 'rollup-plugin-visualizer';
+
 import CoverImageDownloader from './src/integrations/cover-image-downloader';
 import CustomIconDownloader from './src/integrations/custom-icon-downloader';
 import FeaturedImageDownloader from './src/integrations/featured-image-downloader';
 import PublicNotionCopier from './src/integrations/public-notion-copier';
 import { BASE_PATH, CUSTOM_DOMAIN } from './src/server-constants';
-
-import pagefind from 'astro-pagefind';
 
 const getSite = function () {
   if (CUSTOM_DOMAIN) {
@@ -46,6 +49,9 @@ export default defineConfig({
     CustomIconDownloader(),
     FeaturedImageDownloader(),
     PublicNotionCopier(),
+    sitemap(),
+    purgecss(),
+    compress(),
   ],
   vite: {
     ssr: {
