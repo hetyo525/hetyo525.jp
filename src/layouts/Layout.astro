@@ -29,7 +29,7 @@ const siteOGImage = new URL(getStaticFilePath('/default-og-image.png'), Astro.si
 <!doctype html>
 <html lang="ja" prefix="og: https://ogp.me/ns#">
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0" />
     <meta name="robots" content="max-image-preview:large" />
     <meta charset="UTF-8" />
     <meta name="generator" content={Astro.generator} />
@@ -117,7 +117,7 @@ const siteOGImage = new URL(getStaticFilePath('/default-og-image.png'), Astro.si
 
 <style>
   .container {
-    min-height: 100vh;
+    min-height: 100dvh;
   }
 
   .container > div {
@@ -148,6 +148,11 @@ const siteOGImage = new URL(getStaticFilePath('/default-og-image.png'), Astro.si
 
   .footer-wrapper {
     background-color: var(--surface-container);
+  }
+
+  body.no-scroll {
+    max-height: 100dvh;
+    height: 100dvh;
   }
 
   nav > .button.l {
@@ -205,11 +210,12 @@ const siteOGImage = new URL(getStaticFilePath('/default-og-image.png'), Astro.si
   let lastScrollTop = 0;
   function scrollHandler() {
     const header = document.querySelector('header')!;
+    const body = document.querySelector('body')!;
     const scrollTop = window.scrollY || document.documentElement.scrollTop;
     if (scrollTop < lastScrollTop) {
       // スクロールが上向きのとき
       header.classList.remove('hide');
-    } else if (window.scrollY > 48) {
+    } else if (window.scrollY > 48 && !body.classList.contains('no-scroll')) {
       // スクロールが下向きのとき
       header.classList.add('hide');
     }

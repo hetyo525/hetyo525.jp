@@ -79,6 +79,7 @@ import Search from 'astro-pagefind/components/Search';
     background-color: rgba(0, 0, 0, 0.5);
     width: 100%;
     height: 100vh;
+    overflow: hidden;
   }
 
   @media (max-width: 640px) {
@@ -87,6 +88,7 @@ import Search from 'astro-pagefind/components/Search';
       z-index: 1000;
       visibility: hidden;
       width: 100%;
+      top: 0;
       left: 0;
       padding: 8px;
       background-color: var(--surface);
@@ -120,18 +122,32 @@ import Search from 'astro-pagefind/components/Search';
 </script>
 
 <script>
+  const html = document.querySelector('html')!;
+  const body = document.querySelector('body')!;
   const searchBtn = document.getElementById('search-btn')!;
   const search = document.getElementById('search')!;
   const overlay = document.querySelector('.overlay')!;
-  searchBtn.addEventListener('click', () => {
+
+  // サーチを表示する
+  function openSearch() {
+    body.classList.add('no-scroll');
+    html.classList.add('no-scroll');
     search.classList.add('show');
     overlay.classList.add('active');
     search.querySelector('input')?.focus();
-  });
-  overlay.addEventListener('click', () => {
-    const clearBtn = document.querySelector<HTMLButtonElement>('.pagefind-ui__search-clear')!;
-    clearBtn.click();
+  }
+
+  // サーチを非表示にする
+  function closeSearch() {
+    document.querySelector<HTMLButtonElement>('.pagefind-ui__search-clear')!.click();
+    body.classList.remove('no-scroll');
+    html.classList.remove('no-scroll');
     search.classList.remove('show');
     overlay.classList.remove('active');
-  });
+  }
+
+  // イベントハンドラー登録
+  searchBtn.addEventListener('click', openSearch);
+  overlay.addEventListener('click', closeSearch);
+  overlay.addEventListener('touchend', closeSearch);
 </script>
