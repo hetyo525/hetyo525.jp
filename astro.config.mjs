@@ -2,7 +2,7 @@ import sitemap from '@astrojs/sitemap';
 import compress from 'astro-compress';
 import icon from 'astro-icon';
 import pagefind from 'astro-pagefind';
-import purgecss from 'astro-purgecss';
+// import purgecss from 'astro-purgecss';
 import { defineConfig } from 'astro/config';
 import { visualizer } from 'rollup-plugin-visualizer';
 
@@ -50,7 +50,7 @@ export default defineConfig({
     FeaturedImageDownloader(),
     PublicNotionCopier(),
     sitemap(),
-    purgecss(),
+    // purgecss(),
     compress(),
   ],
   vite: {
