@@ -146,8 +146,20 @@ import Search from 'astro-pagefind/components/Search';
     overlay.classList.remove('active');
   }
 
+  // キーボードイベントハンドラー
+  function handleKeydown(event: KeyboardEvent) {
+    if (event.target instanceof HTMLInputElement) {
+      return;
+    }
+    if (event.key === '/' || event.key === '.') {
+      event.preventDefault();
+      document.querySelector<HTMLInputElement>('.pagefind-ui__search-input')!.focus();
+    }
+  }
+
   // イベントハンドラー登録
   searchBtn.addEventListener('click', openSearch);
   overlay.addEventListener('click', closeSearch);
   overlay.addEventListener('touchend', closeSearch);
+  window.addEventListener('keydown', handleKeydown);
 </script>
