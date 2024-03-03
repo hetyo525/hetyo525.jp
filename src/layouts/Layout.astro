@@ -36,6 +36,7 @@ const siteOGImage = new URL(getStaticFilePath('/default-og-image.png'), Astro.si
     <title>{siteTitle}</title>
     <meta name="description" content={siteDescription} />
     <link rel="canonical" href={siteURL} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
     <meta property="og:url" content={siteURL} />
     <meta property="og:title" content={siteTitle} />
     <meta property="og:description" content={siteDescription} />
