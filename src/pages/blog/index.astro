@@ -1,51 +1,92 @@
 ---
-import BlogPostsLink from '@/components/BlogPostsLink.astro';
-import BlogTagsLink from '@/components/BlogTagsLink.astro';
 import NoContents from '@/components/NoContents.astro';
 import Pagination from '@/components/Pagination.astro';
+import Layout from '@/layouts/Layout.astro';
+import { getAllBlocksByBlockId, getNumberOfPages, getPosts } from '@/lib/notion/client.ts';
+
+import PostBody from '@/components/PostBody.astro';
 import PostDate from '@/components/PostDate.astro';
-import PostExcerpt from '@/components/PostExcerpt.astro';
 import PostFeaturedImage from '@/components/PostFeaturedImage.astro';
 import PostTags from '@/components/PostTags.astro';
-import PostTitle from '@/components/PostTitle.astro';
-import ReadMoreLink from '@/components/ReadMoreLink.astro';
-import Layout from '@/layouts/Layout.astro';
-import { getAllTags, getNumberOfPages, getPosts, getRankedPosts } from '@/lib/notion/client.ts';
-import { NUMBER_OF_POSTS_PER_PAGE } from '@/server-constants.ts';
-import styles from '@/styles/blog.module.css';
+import { downloadAllFiles } from '@/lib/blog-helpers';
+import PostTitle from '../../components/PostTitle.astro';
 
-const [posts, rankedPosts, tags, numberOfPages] = await Promise.all([
-  getPosts(NUMBER_OF_POSTS_PER_PAGE),
-  getRankedPosts(),
-  getAllTags(),
-  getNumberOfPages(),
-]);
+const NUMBER_OF_POSTS_PER_PAGE = 10;
+
+const [posts, numberOfPages] = await Promise.all([getPosts(NUMBER_OF_POSTS_PER_PAGE), getNumberOfPages()]);
+const postWithBlocks = await Promise.all(
+  posts.map(async (post) => {
+    const blocks = await getAllBlocksByBlockId(post.PageId);
+    return { ...post, blocks };
+  }),
+);
+const flattenBlocks = postWithBlocks.map((post) => post.blocks).flat();
+await downloadAllFiles(flattenBlocks);
 ---
 
 <Layout feature="Blog">
-  <div slot="main" class={styles.main}>
+  <div slot="main">
     {
-      posts.length === 0 ? (
-        <NoContents contents={posts} />
+      postWithBlocks.length === 0 ? (
+        <NoContents contents={postWithBlocks} />
       ) : (
-        posts.map((post) => (
-          <div class={styles.post}>
-            <PostDate post={post} />
-            <PostTags post={post} />
-            <PostTitle post={post} />
-            <PostFeaturedImage post={post} />
-            <PostExcerpt post={post} />
-            <ReadMoreLink post={post} />
-          </div>
-        ))
+        <div>
+          {postWithBlocks.map((post) => (
+            <div>
+              <div class="medium-space" />
+              <PostFeaturedImage post={post} />
+              <div class="medium-space" />
+              <PostTitle post={post} enableLink={false} />
+              <PostDate post={post} />
+              <PostTags post={post} />
+              <div class="medium-space" />
+              <PostBody blocks={post.blocks} />
+              <div class="large-space" />
+
+              <div class="row">
+                <div class="max" />
+                <a
+                  class="button circle transparent"
+                  href={`https://twitter.com/intent/post?url=${Astro.site?.href}blog/${post.Slug}&text=${post.Title}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                    <path d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z" />
+                  </svg>
+                </a>
+                {/* NOTE: どーせブクマ付かないからコメントアウト
+                <a
+                  href={`https://b.hatena.ne.jp/entry/${Astro.site?.href}blog/${post.Slug}`}
+                  class="hatena-bookmark-button"
+                  data-hatena-bookmark-layout="basic-label-counter"
+                  data-hatena-bookmark-lang="ja"
+                  data-hatena-bookmark-height="24"
+                  title="このエントリーをはてなブックマークに追加"
+                >
+                  <img
+                    src="https://b.st-hatena.com/images/v4/public/entry-button/button-only@2x.png"
+                    alt="このエントリーをはてなブックマークに追加"
+                    width="20"
+                    height="20"
+                    style="border: none;"
+                  />
+                </a>
+                <script
+                  type="text/javascript"
+                  src="https://b.st-hatena.com/js/bookmark_button.js"
+                  charset="utf-8"
+                  async="async"
+                />
+              */}
+              </div>
+              <div class="large-divider" />
+            </div>
+          ))}
+        </div>
       )
     }
 
     <Pagination currentPage={1} numberOfPages={numberOfPages} />
-  </div>
-
-  <div slot="aside" class={styles.aside}>
-    <BlogPostsLink heading="Recommended" posts={rankedPosts} />
-    <BlogTagsLink heading="Categories" tags={tags} />
   </div>
 </Layout>

@@ -1,6 +1,7 @@
 import fetch from 'node-fetch';
 import { BASE_PATH, REQUEST_TIMEOUT_MS } from '../server-constants';
 import type { Block, Column, Heading1, Heading2, Heading3, RichText } from './interfaces';
+import { downloadFile, getBlock } from './notion/client';
 import { pathJoin } from './utils';
 
 export const filePath = (url: URL): string => {
@@ -44,6 +45,43 @@ export const extractTargetBlocks = (blockType: string, blocks: Block[]): Block[]
       return acc;
     }, [])
     .flat();
+};
+
+export const downloadAllFiles = async (blocks: Block[]) => {
+  const fileAtacchedBlocks = extractTargetBlocks('image', blocks)
+    .concat(extractTargetBlocks('file', blocks))
+    .filter((block) => {
+      if (!block) {
+        return false;
+      }
+      const imageOrFile = block.Image || block.File;
+      return imageOrFile && imageOrFile.File && imageOrFile.File.Url;
+    });
+
+  // Download files
+  await Promise.all(
+    fileAtacchedBlocks
+      .map(async (block) => {
+        const expiryTime = (block.Image || block.File)?.File?.ExpiryTime;
+        if (expiryTime && Date.parse(expiryTime) > Date.now()) {
+          return Promise.resolve(block);
+        }
+        return getBlock(block.Id);
+      })
+      .map((promise) =>
+        promise.then((block) => {
+          let url!: URL;
+          try {
+            url = new URL((block.Image || block.File)?.File?.Url ?? '');
+          } catch (err) {
+            console.log('Invalid file URL');
+            return Promise.reject();
+          }
+          return Promise.resolve(url);
+        }),
+      )
+      .map((promise) => promise.then(downloadFile)),
+  );
 };
 
 const _extractTargetBlockFromColums = (blockType: string, columns: Column[]): Block[] => {

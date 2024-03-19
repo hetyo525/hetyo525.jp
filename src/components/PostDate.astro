@@ -1,5 +1,5 @@
 ---
-import { getDateStr } from '@/lib/blog-helpers.ts';
+import dayjs from '@/lib/dayjs';
 import type { Post } from '@/lib/interfaces.ts';
 
 export interface Props {
@@ -7,15 +7,7 @@ export interface Props {
 }
 
 const { post } = Astro.props;
+const date = post.Date ? dayjs(post.Date).format('YYYY-MM-DD hh:mm') : '';
 ---
 
-<div class="post-date">
-  {post.Date ? getDateStr(post.Date) : ''}
-</div>
-
-<style>
-  .post-date {
-    padding: 0 0 0.3rem;
-    font-size: 0.9rem;
-  }
-</style>
+<p class="lower">{date}</p>

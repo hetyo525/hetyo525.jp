@@ -27,12 +27,16 @@ const description =
     height: 800px;
   }
 
+  :global(main.responsive) {
+    max-inline-size: calc(75rem + var(---padding)) !important;
+  }
+
   @media (max-width: 640px) {
     .calender-wrapper {
       width: 100vw;
       height: calc(100dvh - 74px);
       position: fixed;
-      margin: 0 -8px;
+      margin: 0 -16px;
       z-index: 1;
     }
     :global(main.responsive) {
